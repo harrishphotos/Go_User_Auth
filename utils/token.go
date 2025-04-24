@@ -21,9 +21,13 @@ func CreateToken(claims TokenClaims) (string, error) {
 	
 	// Convert hex string to bytes
 	key, err := hex.DecodeString(config.AppConfig.PasetoSecretKey)
-	if err != nil || len(key) != 32 {
-		return "", fmt.Errorf("invalid secret key: must be 32 bytes")
-	}
+    if err != nil {
+        return "", fmt.Errorf("invalid hex format: %v", err)
+    }
+
+    if len(key) != 32 {
+        return "", fmt.Errorf("invalid key length: got %d bytes, need 32", len(key))
+    }
 	
 	// Token expires based on config
 	expiration := time.Now().Add(config.AppConfig.TokenExpiration)
@@ -42,9 +46,13 @@ func ValidateToken(tokenString string) (*TokenClaims, error) {
 	
 	// Convert hex string to bytes
 	key, err := hex.DecodeString(config.AppConfig.PasetoSecretKey)
-	if err != nil || len(key) != 32 {
-		return nil, fmt.Errorf("invalid secret key: must be 32 bytes")
-	}
+    if err != nil {
+        return nil, fmt.Errorf("invalid hex format: %v", err)
+    }
+
+    if len(key) != 32 {
+        return nil, fmt.Errorf("invalid key length: got %d bytes, need 32", len(key))
+    }
 	
 	var claims TokenClaims
 	err = v2.Decrypt(tokenString, key, &claims, nil)

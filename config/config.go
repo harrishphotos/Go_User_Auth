@@ -17,6 +17,12 @@ type Config struct {
 	TokenExpiration time.Duration
 	Port           string
 	Environment    string
+	SMTPHost       string
+	SMTPPort       string
+	SMTPUsername   string
+	SMTPPassword   string
+	SMTPFrom       string
+	APPUrl         string
 }
 
 var AppConfig Config
@@ -43,6 +49,13 @@ func LoadConfig() error {
 		TokenExpiration: tokenExpiration,
 		Port:            os.Getenv("PORT"),
 		Environment:     os.Getenv("ENVIRONMENT"),
+		SMTPHost:        os.Getenv("SMTP_HOST"),
+	    SMTPPort:        os.Getenv("SMTP_PORT"),
+	    SMTPUsername:    os.Getenv("SMTP_USERNAME"),
+	    SMTPPassword:    os.Getenv("SMTP_PASSWORD"),
+	    SMTPFrom:        os.Getenv("SMTP_FROM"),
+		APPUrl:          os.Getenv("APP_URL"),
+
 	}
 
 	return nil

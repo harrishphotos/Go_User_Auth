@@ -12,5 +12,8 @@ type User struct {
 	Role      string    `gorm:"not null;default:'user'" json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	IsVerified bool      `gorm:"default:false" json:"is_verified"`
+	VerificationToken string  `gorm:"index" json:"-"`
+	TokenExpiresAt time.Time `json:"-"`
 }
 

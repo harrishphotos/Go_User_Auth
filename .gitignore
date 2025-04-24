@@ -1,0 +1,41 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go coverage tool
+*.cover
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Vendor directory (if you're not using vendoring, remove this)
+vendor/
+
+# Dependency directories (when using Go modules)
+bin/
+pkg/
+build/
+
+# IDE/editor-specific files
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*  # for variations like .env.production or .env.local
+
+# Kafka or other service output files (optional)
+*.pid
+
+# OS generated files
+.DS_Store
+Thumbs.db
