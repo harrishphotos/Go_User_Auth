@@ -1,46 +1,75 @@
 package main
 
 import (
+	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"book_crud/config"
 	"book_crud/database"
 	"book_crud/middleware"
 	"book_crud/routes"
+	"book_crud/services/kafka"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
-	// Load environment variables
+	// Load config
 	if err := config.LoadConfig(); err != nil {
-		log.Fatal("Error loading config:", err)
+		log.Fatalf("Config loading failed: %v", err)
 	}
 
-	// Initialize database connection
+	// Initialize db
 	if err := database.ConnectDB(); err != nil {
-		log.Fatal("Error connecting to database:", err)
+		log.Fatalf("Database connection failed: %v", err)
 	}
 
-	// Create new Fiber app
+	// Initialize Kafka consumer for email processing
+	initKafkaConsumer()
+
 	app := fiber.New()
 
-	// Middleware
-	app.Use(cors.New())
-	app.Use(logger.New())
+	// Configure middleware
+	middleware.SetupMiddleware(app)
 
-	// Setup auth routes (unprotected)
-	routes.SetupAuthRoutes(app)
-	
-	// Create protected API group
-	api := app.Group("/api")
-	api.Use(middleware.AuthMiddleware())
-	
-	// Pass the protected api group to route setup functions
-	routes.SetupBookRoutes(api)
-	routes.SetupStoreRoutes(api)
+	// Setup routes
+	routes.SetupRoutes(app)
 
+	// Get port from config, with fallback options
+	port := config.AppConfig.Port
+	if port == "" {
+		port = "3000"
+	}
+	
 	// Start server
-	log.Fatal(app.Listen(":" + config.AppConfig.Port))
+	log.Printf("Server starting on port %s", port)
+	log.Fatal(app.Listen(":" + port))
+}
+
+// Add this function to initialize and start the Kafka consumer
+func initKafkaConsumer() {
+	// Create a context that can be cancelled for graceful shutdown
+	ctx, cancel := context.WithCancel(context.Background())
+	
+	// Set up signal handling
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+	
+	// Create and start the consumer
+	consumer := kafka.NewConsumer()
+	go consumer.Start(ctx)
+	
+	// Handle shutdown signal
+	go func() {
+		<-signalChan
+		log.Println("Shutting down application...")
+		cancel() // Cancel the context to signal the consumer to stop
+		// Allow some time for cleanup
+		time.Sleep(2 * time.Second)
+		os.Exit(0)
+	}()
 }

@@ -13,6 +13,7 @@ type Config struct {
 	DBName         string
 	DBPort         string
 	DBSSLMode      string
+	DBPassword     string
 	PasetoSecretKey string
 	TokenExpiration time.Duration
 	Port           string
@@ -23,6 +24,9 @@ type Config struct {
 	SMTPPassword   string
 	SMTPFrom       string
 	APPUrl         string
+	KAFKABrokers   string
+	KAFKATopicsendverification  string
+	KAFKAGroupid string
 }
 
 var AppConfig Config
@@ -45,6 +49,7 @@ func LoadConfig() error {
 		DBName:          os.Getenv("DB_NAME"),
 		DBPort:          os.Getenv("DB_PORT"),
 		DBSSLMode:       os.Getenv("DB_SSL_MODE"),
+		DBPassword:      os.Getenv("DB_PASSWORD"),
 		PasetoSecretKey: os.Getenv("PASETO_SECRET_KEY"),
 		TokenExpiration: tokenExpiration,
 		Port:            os.Getenv("PORT"),
@@ -55,7 +60,9 @@ func LoadConfig() error {
 	    SMTPPassword:    os.Getenv("SMTP_PASSWORD"),
 	    SMTPFrom:        os.Getenv("SMTP_FROM"),
 		APPUrl:          os.Getenv("APP_URL"),
-
+		KAFKABrokers:     os.Getenv("KAFKA_BROKERS"),
+		KAFKATopicsendverification:  os.Getenv("KAFKA_TOPIC_SEND_VERIFICATION"),
+		KAFKAGroupid: os.Getenv("KAFKA_GROUP_ID"),
 	}
 
 	return nil

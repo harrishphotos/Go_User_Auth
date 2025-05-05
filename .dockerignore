@@ -1,0 +1,40 @@
+# Ignore the .git directory
+.git
+
+
+# Ignore logs
+*.log
+
+# Ignore Dockerfile and docker-compose.yml
+Dockerfile
+docker-compose.yml
+
+
+# Ignore Go build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Ignore Go workspace files
+go.work
+go.work.sum
+
+# Ignore vendor directory
+vendor/
+
+# Ignore dependency directories
+bin/
+pkg/
+build/
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+*.swp
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db 

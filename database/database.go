@@ -13,9 +13,10 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() error {
-	dsn := fmt.Sprintf("host=%s user=%s dbname=%s port=%s sslmode=%s",
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		config.AppConfig.DBHost,
 		config.AppConfig.DBUser,
+		config.AppConfig.DBPassword,
 		config.AppConfig.DBName,
 		config.AppConfig.DBPort,
 		config.AppConfig.DBSSLMode,
