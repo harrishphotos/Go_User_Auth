@@ -3,7 +3,7 @@ services:
     image: bitnami/kafka:3.6.0
     container_name: kafka
     ports:
-      - "9094:9094"
+      - "${KAFKA_PORT:-9094}:9094"
     environment:
       - KAFKA_CFG_NODE_ID=1
       - KAFKA_CFG_PROCESS_ROLES=broker,controller
@@ -29,11 +29,11 @@ services:
     image: postgres:16
     container_name: postgres
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     environment:
-      - POSTGRES_DB=book_crud
-      - POSTGRES_USER=harish
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -43,13 +43,12 @@ services:
     build: .
     container_name: book_crud_app
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     depends_on:
       - kafka
+      - postgres
     env_file:
       - .env
-    environment:
-      - KAFKA_BROKERS=kafka:9094
     restart: unless-stopped
 
 volumes:
