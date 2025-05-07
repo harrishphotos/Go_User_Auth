@@ -46,7 +46,21 @@ func (s *EmailService) SendVerificationEmail(email, username, token string) erro
 	}
 
 	return s.SendEmail(emaildata)
+}
 
+func (s *EmailService) SendPasswordResetEmail(email, username, token string) error {
+	resetURL := fmt.Sprintf("%s/reset-password?token=%s", config.AppConfig.APPUrl, token)
+
+	subject := "Reset Your Password"
+	body := s.getPasswordResetEmailTemplate(username, resetURL, 1)
+
+	emailData := EmailData{
+		To:      email,
+		Subject: subject,
+		Body:    body,
+	}
+
+	return s.SendEmail(emailData)
 }
 
 func (s *EmailService) SendEmail(data EmailData) error {
@@ -144,4 +158,68 @@ func (s *EmailService) getVerificationEmailTemplate(username, verificationURL st
 </body>
 </html>
 `, username, verificationURL, expiryHours, verificationURL, time.Now().Year())
+}
+
+func (s *EmailService) getPasswordResetEmailTemplate(username, resetURL string, expiryHours int) string {
+	return fmt.Sprintf(`
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+			border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Password Reset</h2>
+        <p>Hello %s,</p>
+        <p>You have requested to reset your password. Please click the button below to set a new password:</p>
+        
+        <a href="%s" class="button">Reset Password</a>
+        
+        <p>This link will expire in %d hour/s.</p>
+        
+        <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+        <p>%s</p>
+        
+        <p>If you didn't request a password reset, you can safely ignore this email.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; %d SaloBook. All rights reserved.</p>
+		 <p>This is an automated message, please do not reply.</p>
+    </div>
+</body>
+</html>
+`, username, resetURL, expiryHours, resetURL, time.Now().Year())
 }

@@ -15,7 +15,7 @@ type Config struct {
 	DBSSLMode      string
 	DBPassword     string
 	PasetoSecretKey string
-	TokenExpiration time.Duration
+	AccessTokenExpiration time.Duration
 	Port           string
 	Environment    string
 	SMTPHost       string
@@ -38,9 +38,9 @@ func LoadConfig() error {
 	}
 
 	// Parse token expiration duration
-	tokenExpiration, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRATION"))
+	tokenExpiration, err := time.ParseDuration(os.Getenv("ACCESS_TOKEN_EXPIRATION"))
 	if err != nil {
-		tokenExpiration = 24 * time.Hour // Default to 24 hours
+		tokenExpiration = 15 * time.Minute // Default to 15 min
 	}
 
 	AppConfig = Config{
@@ -51,7 +51,7 @@ func LoadConfig() error {
 		DBSSLMode:       os.Getenv("DB_SSL_MODE"),
 		DBPassword:      os.Getenv("DB_PASSWORD"),
 		PasetoSecretKey: os.Getenv("PASETO_SECRET_KEY"),
-		TokenExpiration: tokenExpiration,
+		AccessTokenExpiration: tokenExpiration,
 		Port:            os.Getenv("PORT"),
 		Environment:     os.Getenv("ENVIRONMENT"),
 		SMTPHost:        os.Getenv("SMTP_HOST"),

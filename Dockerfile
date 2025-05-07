@@ -1,40 +1,42 @@
-# Use official Golang image as the base
-FROM golang:1.24 AS builder
+# Use smaller Alpine-based golang image
+FROM golang:1.24-alpine AS builder
 
-# Set the working directory inside the container
+# Install necessary build tools
+RUN apk add --no-cache git
+
+# Set working directory
 WORKDIR /app
 
-# Copy go.mod and go.sum files first
+# Copy go.mod and go.sum first for better caching
 COPY go.mod go.sum ./
 
-# Download dependencies
+# Download dependencies (with caching)
 RUN go mod download
 
-# Copy the source code and env file
-COPY . .
+# Copy only necessary source code
+COPY *.go ./
+COPY controllers/ ./controllers/
+COPY database/ ./database/
+COPY middleware/ ./middleware/
+COPY models/ ./models/
+COPY routes/ ./routes/
+COPY services/ ./services/
+COPY utils/ ./utils/
+COPY config/ ./config/
 
-# Build the Go application with CGO disabled for Alpine
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app_binary .
+# Build with optimization flags
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o app_binary .
 
-# Use a minimal Alpine image
-FROM alpine:latest
+# Use distroless as minimal base image
+FROM gcr.io/distroless/static-debian11
 
-# Install dependencies for Alpine
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /root/
-
-# Copy only the binary from the builder stage
-COPY --from=builder /app/app_binary .
-
-# Copy the env file from the builder stage
-COPY --from=builder /app/.env .
-
-# Make sure the binary is executable
-RUN chmod +x ./app_binary
+# Copy binary from builder
+WORKDIR /
+COPY --from=builder /app/app_binary /app_binary
+COPY .env /.env
 
 # Expose port
 EXPOSE 3000
 
-# Run the application
-CMD ["./app_binary"]
+# Run the binary
+ENTRYPOINT ["/app_binary"]

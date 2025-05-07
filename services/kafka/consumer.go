@@ -96,9 +96,8 @@ func (c *Consumer) processEmailMessage(payload EmailPayload) error {
     switch payload.MessageType {
     case "verification":
         return c.emailService.SendVerificationEmail(payload.Email, payload.Username, payload.Token)
-    // Add cases for other message types as needed
-    // case "password_reset":
-    //    return c.emailService.SendPasswordResetEmail(...)
+    case "password_reset":
+        return c.emailService.SendPasswordResetEmail(payload.Email, payload.Username, payload.Token)
     default:
         return fmt.Errorf("unknown message type: %s", payload.MessageType)
     }

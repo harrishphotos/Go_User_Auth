@@ -26,6 +26,10 @@ func NewProducer() *Producer {
             Balancer: &kafka.LeastBytes{},
             RequiredAcks: kafka.RequireOne,
             WriteTimeout: 2 * time.Second,
+            BatchSize: 100,
+            BatchTimeout: 50 * time.Millisecond,
+            Compression: kafka.Snappy,
+            Async: true,
         },
     }
 }
@@ -37,6 +41,31 @@ func (p *Producer) SendVerificationEmail(email, username, token string, expiresA
         Token: token, 
         ExpiresAt: expiresAt,
         MessageType: "verification",
+    }
+
+    data, err := json.Marshal(payload)
+    if err != nil {
+        return err
+    }
+
+    msg := kafka.Message{
+        Key:   []byte(email),
+        Value: data,
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    return p.writer.WriteMessages(ctx, msg)
+}
+
+func (p *Producer) SendPasswordResetEmail(email, username, token string, expiresAt time.Time) error {
+    payload := EmailPayload{
+        Email: email, 
+        Username: username, 
+        Token: token, 
+        ExpiresAt: expiresAt,
+        MessageType: "password_reset",
     }
 
     data, err := json.Marshal(payload)

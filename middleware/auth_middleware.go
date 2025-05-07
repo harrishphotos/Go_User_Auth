@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"strings"
-	"github.com/gofiber/fiber/v2"
 	"book_crud/utils"
+	"strings"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func AuthMiddleware() fiber.Handler {
@@ -24,6 +25,13 @@ func AuthMiddleware() fiber.Handler {
 		if err != nil {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "Invalid token",
+			})
+		}
+		
+		// Ensure the token is an access token
+		if claims.TokenType != "access" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Invalid token type",
 			})
 		}
 
