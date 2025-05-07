@@ -328,3 +328,7 @@ Authorization: Bearer v4.local.payload_data_here
 - **app**: Go application service
 - **postgres**: PostgreSQL database
 - **kafka**: Kafka message broker
+
+##licence
+
+##
