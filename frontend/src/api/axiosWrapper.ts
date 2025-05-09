@@ -7,18 +7,31 @@ const useAxiosWrapper = () => {
 
   // Set up interceptors (only once per component mount)
   axiosInstance.interceptors.request.use(
+<<<<<<< Updated upstream
     (config) => {
+=======
+    (config: { headers: { [x: string]: string } }) => {
+>>>>>>> Stashed changes
       if (accessToken) {
         config.headers["Authorization"] = `Bearer ${accessToken}`;
       }
       return config;
     },
+<<<<<<< Updated upstream
     (error) => Promise.reject(error)
   );
 
   axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
+=======
+    (error: any) => Promise.reject(error)
+  );
+
+  axiosInstance.interceptors.response.use(
+    (response: any) => response,
+    async (error: { config: any; response: { status: number } }) => {
+>>>>>>> Stashed changes
       const originalRequest = error.config;
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
