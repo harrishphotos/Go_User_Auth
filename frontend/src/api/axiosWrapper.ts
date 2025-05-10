@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import axiosInstance from "./axios";
 
 const useAxiosWrapper = () => {
-  const { accessToken, setAuth, logout } = useAuth();
+  const { accessToken, setAuth, logout, user } = useAuth();
 
   useEffect(() => {
     const publicPaths: string[] = [
@@ -34,7 +34,6 @@ const useAxiosWrapper = () => {
       (error: AxiosError) => Promise.reject(error)
     );
 
-    // Response interceptor
     const responseInterceptor = axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => response,
       async (error: AxiosError) => {
@@ -47,13 +46,15 @@ const useAxiosWrapper = () => {
 
           try {
             const refreshResponse = await axiosInstance.post<{
-              accessToken: string;
-            }>("/auth/refresh", {});
+              access_token: string;
+            }>("/api/auth/refresh", {}, { withCredentials: true });
 
-            const { accessToken: newAccessToken } = refreshResponse.data;
+            const { access_token: newAccessToken } = refreshResponse.data;
 
             localStorage.setItem("access_token", newAccessToken);
-            setAuth({ id: "userId", email: "userEmail" }, newAccessToken);
+
+            // use existing user if available, fallback to empty
+            setAuth(user ?? { id: "", email: "" }, newAccessToken);
 
             if (originalRequest.headers) {
               originalRequest.headers[
@@ -63,10 +64,13 @@ const useAxiosWrapper = () => {
 
             return axiosInstance(originalRequest);
           } catch (refreshError) {
-            logout(); // clear context and localStorage
-            window.location.href = "/login"; // force redirect
+            logout();
+            window.location.href = "/login";
             return Promise.reject(refreshError);
           }
+        }
+        if (error.response?.status === 500) {
+          window.location.href = "/error";
         }
 
         return Promise.reject(error);

@@ -7,6 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassWord";
 import ResetPassword from "./pages/ResetPassword";
 import Logout from "./pages/Logout";
+import Error500 from "./pages/Error500";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/error" element={<Error500 />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>
   );
