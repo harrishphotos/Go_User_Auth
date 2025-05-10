@@ -1,11 +1,3 @@
-<<<<<<< Updated upstream
-import React from "react";
-
-const Register: React.FC = () => {
-  return (
-    <div>
-      <h1>Register Page</h1>
-=======
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxiosWrapper from "../api/axiosWrapper";
@@ -78,7 +70,6 @@ const Register: React.FC = () => {
       <p>
         Already have an account? <a href="/login">Login here</a>
       </p>
->>>>>>> Stashed changes
     </div>
   );
 };
