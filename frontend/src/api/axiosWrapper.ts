@@ -63,7 +63,8 @@ const useAxiosWrapper = () => {
 
             return axiosInstance(originalRequest);
           } catch (refreshError) {
-            logout();
+            logout(); // clear context and localStorage
+            window.location.href = "/login"; // force redirect
             return Promise.reject(refreshError);
           }
         }

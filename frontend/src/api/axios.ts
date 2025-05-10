@@ -38,13 +38,17 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest?._retry) {
-      originalRequest._retry = true;
+      const token = getAccessToken();
+      if (!token) {
+        removeAccessToken();
+        return Promise.reject(error); // ⛔ No retry if no token
+      }
 
+      originalRequest._retry = true;
       try {
         const refreshResponse = await axiosInstance.post<{
           accessToken: string;
         }>("/api/auth/refresh", {});
-
         const { accessToken: newAccessToken } = refreshResponse.data;
         setAccessToken(newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

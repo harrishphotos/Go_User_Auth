@@ -38,14 +38,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       .catch(() => {});
   };
 
-  // 🛑 Silent refresh temporarily disabled
+  // ⏱️ Refresh token periodically since we can't read expiry (PASETO)
   useEffect(() => {
-    const storedToken = localStorage.getItem("access_token");
-    if (storedToken) {
-      setAccessToken(storedToken);
-    }
-    // Refresh logic is paused for now
-  }, [location.pathname]);
+    if (!accessToken) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await axios.post<{ accessToken: string }>(
+          "/api/auth/refresh",
+          {},
+          { withCredentials: true }
+        );
+        const newToken = res.data.accessToken;
+        setAccessToken(newToken);
+        localStorage.setItem("access_token", newToken);
+      } catch {
+        logout(); // fallback on refresh failure
+      }
+    }, 54000); // ⏱️ every 45 seconds for 1-min tokens
+
+    return () => clearInterval(interval); // cleanup on unmount/token change
+  }, [accessToken]);
 
   return (
     <AuthContext.Provider value={{ user, accessToken, setAuth, logout }}>
