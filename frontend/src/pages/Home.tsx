@@ -1,38 +1,30 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext"; // Adjust path if needed
-import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+const Home: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout(); // Clear context and localStorage
-    navigate("/login"); // Redirect to login page
+  const handleLogout = (): void => {
+    logout();
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1
-        style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}
-      >
-        Home
-      </h1>
-
-      <button
-        onClick={handleLogout}
-        style={{
-          padding: "10px 16px",
-          backgroundColor: "#e74c3c",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "10px",
-        }}
-      >
-        Logout
-      </button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: "50px",
+      }}
+    >
+      <h1>Home</h1>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
-}
+};
+
+export default Home;

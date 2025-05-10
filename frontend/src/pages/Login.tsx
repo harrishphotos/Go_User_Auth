@@ -24,7 +24,7 @@ const Login: React.FC = () => {
         access_token: string;
         refresh_token: string;
         user: User;
-      }>("/auth/login", {
+      }>("/api/auth/login", {
         email,
         password,
       });
@@ -32,8 +32,7 @@ const Login: React.FC = () => {
       const { access_token, refresh_token, user } = response.data;
 
       localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
-      setAuth(user, access_token, refresh_token);
+      setAuth(user, access_token);
 
       navigate("/home");
     } catch (err) {

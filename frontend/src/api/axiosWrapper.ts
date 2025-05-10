@@ -1,70 +1,10 @@
-// // axiosWrapper.ts
-// import { useEffect } from "react";
-// import { useAuth } from "../context/AuthContext";
-// import axiosInstance from "./axios";
-
-// const useAxiosWrapper = () => {
-//   const { accessToken, setAuth, logout } = useAuth();
-
-//   useEffect(() => {
-//     // Request interceptor
-//     const requestInterceptor = axiosInstance.interceptors.request.use(
-//       (config) => {
-//         if (accessToken) {
-//           config.headers["Authorization"] = `Bearer ${accessToken}`;
-//         }
-//         return config;
-//       },
-//       (error) => Promise.reject(error)
-//     );
-
-//     // Response interceptor
-//     const responseInterceptor = axiosInstance.interceptors.response.use(
-//       (response) => response,
-//       async (error) => {
-//         const originalRequest = error.config;
-//         if (error.response?.status === 401 && !originalRequest._retry) {
-//           originalRequest._retry = true;
-
-//           try {
-//             const refreshResponse = await axiosInstance.post(
-//               "/auth/refresh",
-//               {}
-//             );
-//             const { accessToken: newAccessToken } = refreshResponse.data;
-
-//             localStorage.setItem("access_token", newAccessToken);
-
-//             setAuth({ id: "userId", email: "userEmail" }, newAccessToken);
-//             originalRequest.headers[
-//               "Authorization"
-//             ] = `Bearer ${newAccessToken}`;
-//             return axiosInstance(originalRequest);
-//           } catch (refreshError) {
-//             logout();
-//             return Promise.reject(refreshError);
-//           }
-//         }
-//         return Promise.reject(error);
-//       }
-//     );
-
-//     // Clean up interceptors when the component unmounts
-//     return () => {
-//       axiosInstance.interceptors.request.eject(requestInterceptor);
-//       axiosInstance.interceptors.response.eject(responseInterceptor);
-//     };
-//   }, [accessToken, setAuth, logout]);
-
-//   return axiosInstance;
-// };
-
-// export default useAxiosWrapper;
-
-// useAxiosWrapper.ts
 import { useEffect } from "react";
-import axios from "axios";
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import type {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "./axios";
 
@@ -82,7 +22,7 @@ const useAxiosWrapper = () => {
 
     // Request interceptor
     const requestInterceptor = axiosInstance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config: InternalAxiosRequestConfig) => {
         const isPublic = publicPaths.some((path) => config.url?.includes(path));
 
         if (!isPublic && accessToken && config.headers) {
@@ -132,7 +72,6 @@ const useAxiosWrapper = () => {
       }
     );
 
-    // Cleanup interceptors
     return () => {
       axiosInstance.interceptors.request.eject(requestInterceptor);
       axiosInstance.interceptors.response.eject(responseInterceptor);

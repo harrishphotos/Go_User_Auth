@@ -1,15 +1,20 @@
-import axios from "axios";
-import type { AxiosInstance } from "axios";
-import type { AxiosRequestConfig } from "axios";
-import type { AxiosResponse } from "axios";
-import type { AxiosError } from "axios";
+import axiosPkg from "axios";
+const axios = axiosPkg.default;
+
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+} from "axios";
+
 import {
   getAccessToken,
   setAccessToken,
   removeAccessToken,
 } from "../utils/tokenUtil";
 
-export const BASE_URL = "http://localhost:3000/api";
+export const BASE_URL = "http://localhost:3000";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -36,12 +41,9 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // const refreshResponse = await axios.post<{
-        //   accessToken: string;
-        // }>(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true });
         const refreshResponse = await axiosInstance.post<{
           accessToken: string;
-        }>("/auth/refresh", {});
+        }>("/api/auth/refresh", {});
 
         const { accessToken: newAccessToken } = refreshResponse.data;
         setAccessToken(newAccessToken);

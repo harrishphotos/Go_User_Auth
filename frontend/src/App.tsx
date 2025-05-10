@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/ForgotPassWord";
+import ResetPassword from "./pages/ResetPassword";
+import Logout from "./pages/Logout";
 
 const App = () => {
   return (
@@ -15,6 +17,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </AuthProvider>
   );

@@ -17,7 +17,7 @@ const Register: React.FC = () => {
     setError("");
     setMessage("");
     try {
-      await axios.post("/auth/register", {
+      await axios.post("/api/auth/register", {
         email,
         username,
         password,

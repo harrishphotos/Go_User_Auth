@@ -177,7 +177,7 @@ func Login(c *fiber.Ctx) error {
 		Value:    refreshToken,
 		Expires:  refreshExpiresAt,
 		HTTPOnly: true,
-		Secure:   false, // Set to false for development to work with HTTP
+		Secure:   true, // Set to false for development to work with HTTP
 		SameSite: "lax", // Set to lax to allow redirects
 		Path:     "/api/auth", // Restrict to auth endpoints
 	})
