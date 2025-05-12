@@ -316,9 +316,7 @@ func VerifyEmail(c *fiber.Ctx) error {
 	token := c.Query("token")
 	if token == "" {
 		fmt.Printf("Verification token is missing")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "verification failed",
-		})
+		return c.Redirect("http://localhost:5173/verify-email?status=failed")
 	}
 
 	tx := database.DB.Begin()
@@ -328,9 +326,7 @@ func VerifyEmail(c *fiber.Ctx) error {
 	result := tx.Where("verification_token = ? AND token_expires_at > ?", token, time.Now()).First(&user)
 
 	if result.Error != nil || result.RowsAffected == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid or Expired link",
-		})
+		return c.Redirect("http://localhost:5173/verify-email?status=failed")
 	}
 
 	user.IsVerified = true
@@ -339,21 +335,16 @@ func VerifyEmail(c *fiber.Ctx) error {
 
 	if err := tx.Save(&user).Error; err != nil {
 		fmt.Printf("error while saving user: %v", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Something went wrong. Please try again later.",
-		})
+		return c.Redirect("http://localhost:5173/verify-email?status=failed")
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		fmt.Printf("Transaction commit failed: %v\n", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Something went wrong. Please try again later.",
-		})
+		return c.Redirect("http://localhost:5173/verify-email?status=failed")
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Email verified successfully. You can now log in.",
-	})
+	// Redirect to the frontend verification page with success status
+	return c.Redirect("http://localhost:5173/verify-email?status=success")
 }
 
 // ForgotPassword sends a password reset email to the user
