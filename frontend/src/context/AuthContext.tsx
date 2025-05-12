@@ -49,13 +49,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           {},
           { withCredentials: true }
         );
-        const newToken = res.data.accessToken;
+        const newToken = res.data.access_token;
         setAccessToken(newToken);
         localStorage.setItem("access_token", newToken);
       } catch {
         logout(); // fallback on refresh failure
       }
-    }, 54000); // ⏱️ every 45 seconds for 1-min tokens
+    }, 660000); // refreshes evry 11 mmins
 
     return () => clearInterval(interval); // cleanup on unmount/token change
   }, [accessToken]);
