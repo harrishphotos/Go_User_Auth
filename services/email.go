@@ -49,7 +49,7 @@ func (s *EmailService) SendVerificationEmail(email, username, token string) erro
 }
 
 func (s *EmailService) SendPasswordResetEmail(email, username, token string) error {
-	resetURL := fmt.Sprintf("%s/reset-password?token=%s", config.AppConfig.APPUrl, token)
+	resetURL := fmt.Sprintf("%s/reset-password?token=%s", config.AppConfig.FEAPPURL, token)
 
 	subject := "Reset Your Password"
 	body := s.getPasswordResetEmailTemplate(username, resetURL, 1)

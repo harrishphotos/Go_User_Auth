@@ -24,6 +24,7 @@ type Config struct {
 	SMTPPassword   string
 	SMTPFrom       string
 	APPUrl         string
+	FEAPPURL       string
 	KAFKABrokers   string
 	KAFKATopicsendverification  string
 	KAFKAGroupid string
@@ -60,6 +61,7 @@ func LoadConfig() error {
 	    SMTPPassword:    os.Getenv("SMTP_PASSWORD"),
 	    SMTPFrom:        os.Getenv("SMTP_FROM"),
 		APPUrl:          os.Getenv("APP_URL"),
+		FEAPPURL:        os.Getenv("FE_APP_URL"),
 		KAFKABrokers:     os.Getenv("KAFKA_BROKERS"),
 		KAFKATopicsendverification:  os.Getenv("KAFKA_TOPIC_SEND_VERIFICATION"),
 		KAFKAGroupid: os.Getenv("KAFKA_GROUP_ID"),
