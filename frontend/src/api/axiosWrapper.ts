@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import type {
-  AxiosError,
   AxiosRequestConfig,
   AxiosResponse,
+  AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
 import { useAuth } from "../context/AuthContext";

@@ -1,11 +1,11 @@
-import axiosPkg from "axios";
-const axios = axiosPkg.default;
+import axios from "axios";
 
 import type {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
   AxiosError,
+  InternalAxiosRequestConfig,
 } from "axios";
 
 import {
@@ -22,9 +22,9 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     const token = getAccessToken();
-    if (token) {
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -35,7 +35,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+      headers?: any;
+    };
 
     if (error.response?.status === 401 && !originalRequest?._retry) {
       const token = getAccessToken();
@@ -51,7 +54,9 @@ axiosInstance.interceptors.response.use(
         }>("/api/auth/refresh", {});
         const { accessToken: newAccessToken } = refreshResponse.data;
         setAccessToken(newAccessToken);
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        }
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         removeAccessToken();
