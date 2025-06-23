@@ -12,27 +12,19 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1
-        style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}
-      >
-        Home
-      </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-200 px-4">
+      <div className="max-w-md w-full bg-white/90 rounded-xl shadow-xl p-8 backdrop-blur">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Home
+        </h1>
 
-      <button
-        onClick={handleLogout}
-        style={{
-          padding: "10px 16px",
-          backgroundColor: "#e74c3c",
-          color: "#fff",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-          marginBottom: "10px",
-        }}
-      >
-        Logout
-      </button>
+        <button
+          onClick={handleLogout}
+          className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded transition"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

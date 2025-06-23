@@ -9,11 +9,6 @@ import ForgotPassword from "./pages/ForgotPassWord";
 const App = () => {
   return (
     <AuthProvider>
-      {/* Tailwind CSS v4 Test - Remove this once you verify it's working */}
-      <div className="bg-blue-500 text-white p-4 text-center">
-        🎉 Tailwind CSS v4 is working! You can remove this test div.
-      </div>
-
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
