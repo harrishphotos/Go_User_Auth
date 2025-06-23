@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, type FormEvent, type ChangeEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Layout from "@/components/layouts/Layout";
 import { useNavigate } from "react-router-dom";
 import useAxiosWrapper from "../api/axiosWrapper";
-import type { FormEvent } from "react";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -30,47 +32,83 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      <form onSubmit={handleSubmit}>
+    <Layout title="Register" subtitle="Create your new account.">
+      {error && <p className="text-red-400 text-sm mb-2">{error}</p>}
+      {message && <p className="text-green-400 text-sm mb-2">{message}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email">Email</label>
-          <input
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Email
+          </label>
+          <Input
             type="email"
             id="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             required
+            placeholder="you@example.com"
+            className="bg-white text-black"
           />
         </div>
+
         <div>
-          <label htmlFor="username">Username</label>
-          <input
+          <label
+            htmlFor="username"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Username
+          </label>
+          <Input
             type="text"
             id="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setUsername(e.target.value)
+            }
             required
+            placeholder="Choose a username"
+            className="bg-white text-black"
           />
         </div>
+
         <div>
-          <label htmlFor="password">Password</label>
-          <input
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Password
+          </label>
+          <Input
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             required
+            placeholder="Create a password"
+            className="bg-white text-black"
           />
         </div>
-        <button type="submit">Register</button>
+
+        <Button type="submit" className="w-full">
+          Register
+        </Button>
       </form>
-      <p>
-        Already have an account? <a href="/login">Login here</a>
+
+      <p className="text-sm text-white text-center mt-4">
+        Already have an account?{" "}
+        <a href="/login" className="text-blue-400 hover:underline">
+          Login here
+        </a>
       </p>
-    </div>
+    </Layout>
   );
 };
 

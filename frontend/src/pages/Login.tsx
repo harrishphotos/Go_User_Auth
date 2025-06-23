@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, type FormEvent, type ChangeEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Layout from "@/components/layouts/Layout";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import useAxiosWrapper from "../api/axiosWrapper";
-import type { FormEvent } from "react";
 
 type User = {
   id: string;
@@ -43,64 +45,66 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2
-        style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}
-      >
-        Login
-      </h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "12px" }}>
-          <label htmlFor="email">Email</label>
-          <br />
-          <input
+    <Layout title="Login" subtitle="Welcome back! Please login to continue.">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Email Address
+          </label>
+          <Input
             type="email"
             id="email"
+            name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             required
-            style={{ width: "100%", padding: "8px", marginTop: "4px" }}
+            placeholder="you@example.com"
+            className="bg-white text-black"
           />
         </div>
-        <div style={{ marginBottom: "12px" }}>
-          <label htmlFor="password">Password</label>
-          <br />
-          <input
+
+        <div>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Password
+          </label>
+          <Input
             type="password"
             id="password"
+            name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             required
-            style={{ width: "100%", padding: "8px", marginTop: "4px" }}
+            placeholder="password"
+            className="bg-white text-black"
           />
         </div>
-        <button
-          type="submit"
-          style={{
-            padding: "10px 16px",
-            backgroundColor: "#3498db",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginBottom: "10px",
-          }}
-        >
-          Login
-        </button>
-      </form>
 
-      {/* 🔗 Forgot Password link */}
-      <div>
-        <Link
-          to="/forgot-password"
-          style={{ color: "#3498db", textDecoration: "underline" }}
-        >
-          Forgot Password?
-        </Link>
-      </div>
-    </div>
+        {error && <p className="text-red-400 text-sm">{error}</p>}
+
+        <Button type="submit" className="w-full">
+          Login
+        </Button>
+
+        <div className="text-center mt-4">
+          <Link
+            to="/forgot-password"
+            className="text-blue-400 hover:underline text-sm"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+      </form>
+    </Layout>
   );
 };
 
